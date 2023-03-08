@@ -6,13 +6,14 @@ This repo includes the source code of our suicide-specific SDoH Extraction metho
 ## Requirements
 Python Environment: >= 3.7
 
-## Installation and Usage
+## Installation
 ```
 git clone https://github.com/bionlplab/suicide_sdoh.git
 cd suicide_sdoh
 pip install -r requirements.txt
 ```
 
+## Usage
 ### Train Circumstance classifier
 
 Put the train and test set under directory /data/circumstance. The default backbone model is BioBERT. Run:
