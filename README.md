@@ -1,7 +1,22 @@
-# Suicide-specific SDoH Extraction
+# An NLP Approach to Identify SDoH-related Circumstance and Suicide Crisis from Death Investigation Narratives
 
 ## Purpose
 This repo includes the source code of our suicide-specific SDoH Extraction methods.
+
+## Requirements
+
+## Installation and Usage
+
+## Data Access
+
+The data that support the findings of this study are available from the NVDRS Restricted Access Database (RAD) [here](https://www.cdc.gov/violenceprevention/datasources/nvdrs/dataaccess.html). Restrictions apply to the availability of these data. The data are available by request for users meeting certain eligibility criteria.
+
+## Reference
+
+This repository contains source codes for the work introduced in this following paper:
+```
+An NLP Approach to Identify SDoH-related Circumstance and Suicide Crisis from Death Investigation Narratives. Song Wang, Yifang Dang, Zhaoyi Sun, Ying Ding, Jyotishman Pathak, Cui Tao, Yunyu Xiao, Yifan Peng. 2023.
+```
 
 ## Acknowledgment
 
