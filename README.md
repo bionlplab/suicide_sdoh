@@ -10,7 +10,9 @@ Python Environment: >= 3.7
 ```
 git clone https://github.com/bionlplab/suicide_sdoh.git
 cd suicide_sdoh
+pip install -r requirements.txt
 ```
+
 ### Train Circumstance classifier
 
 Put the train and test set under directory /data/circumstance. The default backbone model is BioBERT. Run:
