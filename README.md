@@ -7,6 +7,10 @@ This repo includes the source code of our suicide-specific SDoH Extraction metho
 Python Environment: >= 3.7
 
 ## Installation and Usage
+```
+git clone https://github.com/bionlplab/suicide_sdoh.git
+cd suicide_sdoh
+```
 
 ## Data Access
 
@@ -16,9 +20,8 @@ The data that support the findings of this study are available from the NVDRS Re
 
 This repository contains source codes for the work introduced in this following paper:
 ```
-An NLP Approach to Identify SDoH-related Circumstance and Suicide Crisis 
-from Death Investigation Narratives. Song Wang, Yifang Dang, Zhaoyi Sun, 
-Ying Ding, Jyotishman Pathak, Cui Tao, Yunyu Xiao, Yifan Peng. 2023.
+An NLP Approach to Identify SDoH-related Circumstance and Suicide Crisis from Death Investigation Narratives. 
+Song Wang, Yifang Dang, Zhaoyi Sun, Ying Ding, Jyotishman Pathak, Cui Tao, Yunyu Xiao, Yifan Peng. 2023.
 ```
 
 ## Acknowledgment
