@@ -4,8 +4,31 @@
 This repo includes the source code of our suicide-specific SDoH Extraction methods.
 
 ## Requirements
+Python Environment: >= 3.7
 
-## Installation and Usage
+## Installation
+```
+git clone https://github.com/bionlplab/suicide_sdoh.git
+cd suicide_sdoh
+pip install -r requirements.txt
+```
+
+## Usage
+### Train Circumstance classifier
+
+Put the train and test set under directory /data/circumstance. The default backbone model is BioBERT. Run:
+```
+cd src/Hierarchy-BERT-Circumstance
+python Circumstance_classifier.py
+```
+
+### Train Crisis classifier
+
+Put the train and test set under directory /data/crisis. The default backbone model is BioBERT. Run:
+```
+cd src/Hierarchy-BERT-Crisis
+python Crisis_classifier.py
+```
 
 ## Data Access
 

@@ -16,24 +16,28 @@ import os
 
 os.environ['CUDA_VISIBLE_DEVICES'] = "0,1,2,3,4,5,6,7"
 
+# Specify the task to be multi-label 3-class, 5-class or 7-class classification.
 NUM_CLASS = '3_class'
-
 LABELS = {'3_class': ['Social community context', 'Behavior and lifestyle', 'Economic stability'],
           '7_class': ['Safety concern', 'Interpersonal support', 'Mental health problem', 'Adverse life experience', 'Stress', 'Substance use', 'Financial distress'],
          '16_class': ['intimatepartnerproblem_c', 'familyrelationship_c', 'relationshipproblemother_c', 'mentalhealthproblem_c', 'recentsuicidefriendfamily_c', 'disasterexposure_c', 'recentcriminallegalproblem_c', 'legalproblemother_c', 'physicalhealthproblem_c', 'jobproblem_c', 'schoolproblem_c', 'alcoholproblem_c', 'substanceabuseother_c', 'otheraddiction_c', 'financialproblem_c', 'evictionorlossofhome_c']}
 
-DATASETS = {'3_class': {'train': '/data/3class/train.csv',
-                       'test': '/data/3class/test.csv'},
-            '7_class': {'train': '/data/hierarchy/train_problem_7class.csv',
-                        'test': '/data/hierarchy/test_problem_7class.csv'},
-            '16_class': {'train': '/data/hierarchy/train_problem_16class.csv',
-                        'test': '/data/hierarchy/test_problem_16class.csv'}}
+DATASETS = {'3_class': {'train': '/data/circumstance/3class/train.csv',
+                       'test': '/data/circumstance/3class/test.csv'},
+            '7_class': {'train': '/data/circumstance/7class/train.csv',
+                        'test': '/data/circumstance/7class/test.csv'},
+            '16_class': {'train': '/data/circumstance/16class/train.csv',
+                        'test': '/data/circumstance/16class/test.csv'}}
 
+# Backbone model selection
 MODELS = {'BERT': "bert-base-uncased", 
           'PubmedBERT': 'microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext',
           'BioBERT': "dmis-lab/biobert-base-cased-v1.2"}
 
 def calculate_metrics(pred, target):
+    """
+    Function for computing the evaluation metrics.
+    """
     return {'precision': precision_score(y_true=target, y_pred=pred, average='micro'),
             'recall': recall_score(y_true=target, y_pred=pred, average='micro'),
             'f1': f1_score(y_true=target, y_pred=pred, average='micro'),
@@ -44,6 +48,9 @@ def calculate_metrics(pred, target):
             }
 
 def evaluate(args, test_dataloader, model, criterion, device, epoch):
+    """
+    Function for inferencing on the evaluation set.
+    """
     model.eval()
     total_loss = 0
     model_result, targets = [], []
@@ -52,13 +59,15 @@ def evaluate(args, test_dataloader, model, criterion, device, epoch):
     for step, batch in enumerate(test_dataloader):
         report_input_ids, report_masks, labels = batch[0]['input_ids'].to(device), batch[0]['attention_mask'].to(device), batch[1].to(device)
             
+        # Prepare the data before feeding to the model
         inputs = {'input_ids': report_input_ids.squeeze(1),
                   'attention_mask': report_masks.squeeze(1)}
         
         preds = model(**inputs)
         loss = criterion(preds, labels.float())
         total_loss = total_loss + loss.item()
-        
+
+        # Compute the prediction results
         pred_scores.extend(preds.detach().cpu().numpy())
         preds = torch.sigmoid(preds)
         preds = torch.round(preds)
@@ -77,6 +86,9 @@ def evaluate(args, test_dataloader, model, criterion, device, epoch):
     return avg_loss, result['accuracy']
 
 def train(args, train_dataloader, test_dataloader, model, tokenizer, device):
+    """
+    Training models.
+    """
     optimizer = Adam(model.parameters(), lr=args.learning_rate)
     criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(10.)).to(device)
     best_accuracy = 0
@@ -89,6 +101,7 @@ def train(args, train_dataloader, test_dataloader, model, tokenizer, device):
         for step, batch in enumerate(train_dataloader):
             report_input_ids, report_masks, labels = batch[0]['input_ids'].to(device), batch[0]['attention_mask'].to(device), batch[1].to(device)
             
+            # Prepare the data before feeding to the model
             inputs = {'input_ids': report_input_ids.squeeze(1),
                       'attention_mask': report_masks.squeeze(1)}
             
@@ -108,6 +121,7 @@ def train(args, train_dataloader, test_dataloader, model, tokenizer, device):
         
         loss, acc = evaluate(args, test_dataloader, model, criterion, device, epoch)
         
+        # save the best model
         if acc > best_accuracy:
             best_accuracy = acc
             torch.save({
@@ -125,6 +139,7 @@ if __name__ == '__main__':
     device = torch.device('cuda', args.gpu_device)
     print('Device:', device)
    
+    # Initialize the backbone model and tokenizer
     tokenizer = AutoTokenizer.from_pretrained(MODELS[args.bert_model])
     model = BertClassifier(bert=MODELS[args.bert_model], n_classes=int(NUM_CLASS.split('_')[0]))
   
@@ -132,6 +147,7 @@ if __name__ == '__main__':
     print('*'*40)
     print('Model initialized.')
     
+    # Load training and evaluation datasets
     train_df, test_df = pd.read_csv(DATASETS[NUM_CLASS]['train']), pd.read_csv(DATASETS[NUM_CLASS]['test'])
     print('*'*40)
     print('Dataset dataframe loaded. Training set size {}, test set size {}.'.format(len(train_df), len(test_df)))
@@ -144,6 +160,7 @@ if __name__ == '__main__':
     print('*'*40)
     print('Dataset loader loaded.')
     
+    # Train and evaluate
     train(args, train_dataloader, test_dataloader, model, tokenizer, device)
     
     
